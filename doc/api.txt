@@ -1,0 +1,16 @@
+Frontend:
+    main
+
+heat_balancer:
+    /add() -> (id)
+    /remove(id)
+    /start(id)
+    /stop(id)
+    /status() -> ([data])
+
+Heater:
+    /start
+    /stop
+    /status
+
+
