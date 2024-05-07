@@ -12,5 +12,31 @@ Heater:
     /start
     /stop
     /status
+    /ok
 
+/add frontend -> heat_balancer
+heater: {
+    name: string,
+    id: int,
+    ip: string,
+}
 
+/status heater -> heat_balancer
+enum state: {
+    pause,
+    running,
+}
+
+/status heat_balancer -> frontend
+data: [
+    {
+        id: int,
+        status: state,
+    }
+]
+
+/ok heater -> heat_balancer 
+enum connection: {
+    connected,
+    failed,
+}
