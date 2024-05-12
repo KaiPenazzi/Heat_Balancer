@@ -1,4 +1,4 @@
-namespace stateheater;
+namespace state;
 
 public enum StateHeater
 {

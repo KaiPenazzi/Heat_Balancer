@@ -1,4 +1,4 @@
-namespace stateconnection;
+namespace state;
 
 public enum StateConnection
 {
