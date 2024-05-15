@@ -1,12 +1,22 @@
 Frontend:
-    main
+    /
+    /heater/add
+        - name
+        - ip
+        - demand
+    /heater/overview
+        - remove button
+        - add button
+    /Results
+        - graph
+    /api/results <- [data]
 
 heat_balancer:
-    /add() -> (id)
+    /add(Heater) -> (id)
     /remove(id)
-    /start(id)
-    /stop(id)
-    /status() -> ([data])
+    /start(modes)
+    /stop()
+    /status() -> progress
 
 Heater:
     /start
@@ -19,6 +29,14 @@ heater: {
     name: string,
     id: int,
     ip: string,
+
+    demand: string,
+}
+
+/start frontend -> heat_balancer
+enum mode {
+    realtime,
+    simulation,
 }
 
 /status heater -> heat_balancer
@@ -28,12 +46,15 @@ enum state: {
 }
 
 /status heat_balancer -> frontend
-data: [
-    {
-        id: int,
-        status: state,
+result: {
+    id_heater: int,
+    data {
+        date: date
+        ideal: int
+        heater: int
     }
-]
+}
+
 
 /ok heater -> heat_balancer 
 enum connection: {
