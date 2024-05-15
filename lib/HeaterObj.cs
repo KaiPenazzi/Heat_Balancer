@@ -2,17 +2,17 @@ namespace heaterobj;
 
 public class HeaterObj
 {
-    public static int ids { get; set; }
+    private static int ids { get; set; }
 
-    public int id { get; set; }
-    public string? name { get; set; }
-    public string? ip { get; set; }
+    public int ID { get; }
+    public string? Name { get; }
+    public string? IP { get; }
 
     public HeaterObj(string name, string ip)
     {
-        this.id = ids;
-        this.name = name;
-        this.ip = ip;
+        this.ID = ids;
+        this.Name = name;
+        this.IP = ip;
 
         ids++;
     }
