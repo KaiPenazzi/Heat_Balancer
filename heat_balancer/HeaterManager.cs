@@ -26,4 +26,23 @@ public class HeatManager
         return heater.ID;
     }
 
+    public void remove(int ID) {
+        foreach (var item in heaters)
+        {
+            if(item.ID == ID)
+            {
+                heaters.Remove(item);
+                break;
+            }
+        }
+    }
+
+    public String getStatus() {
+        String ret = "";
+        foreach (var item in heaters)
+        {
+            ret += "Name: " + item.Name + " ID: " + item.ID + " IP: " + item.IP + "\n";            
+        }
+        return ret;    
+    }
 }
