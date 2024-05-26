@@ -1,5 +1,3 @@
-using state;
-
 namespace heater;
 
 public class Heater
@@ -18,25 +16,44 @@ public class Heater
         }
     }
 
-    private StateHeater State { get; set; }
+    private int _heating;
+    private int Heating
+    {
+        get
+        {
+            return _heating;
+        }
+
+        set
+        {
+            if (value >= 0)
+            {
+                _heating = value;
+            }
+            if (value > 4000)
+            {
+                _heating = 4000;
+            }
+        }
+    }
 
     private Heater()
     {
-        State = StateHeater.waiting;
+        Heating = 0;
     }
 
-    public void start()
+    public void start(int demand)
     {
-        State = StateHeater.running;
+        Heating = demand;
     }
 
     public void stop()
     {
-        State = StateHeater.waiting;
+        Heating = 0;
     }
 
-    public StateHeater state()
+    public int state()
     {
-        return State;
+        return Heating;
     }
 }
