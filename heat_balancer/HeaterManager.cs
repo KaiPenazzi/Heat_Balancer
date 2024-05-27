@@ -1,23 +1,18 @@
 using heaterobj;
+using dataspace;
+using state;
 
 namespace heatermanager;
 
 public class HeatManager
 {
-    private static HeatManager? _instance;
-    public static HeatManager? Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new HeatManager();
-            }
-            return _instance;
-        }
-    }
-
+    private DataSpace? Data;
     private List<HeaterObj> heaters = new List<HeaterObj>();
+
+    public HeatManager(DataSpace ds)
+    {
+        Data = ds;
+    }
 
     //add a new Heater to the heaters list
     public int add(HeaterObj heater)
@@ -26,10 +21,11 @@ public class HeatManager
         return heater.ID;
     }
 
-    public void remove(int ID) {
+    public void remove(int ID)
+    {
         foreach (var item in heaters)
         {
-            if(item.ID == ID)
+            if (item.ID == ID)
             {
                 heaters.Remove(item);
                 break;
@@ -37,12 +33,17 @@ public class HeatManager
         }
     }
 
-    public String getStatus() {
+    public String getStatus()
+    {
         String ret = "";
         foreach (var item in heaters)
         {
-            ret += "Name: " + item.Name + " ID: " + item.ID + " IP: " + item.IP + "\n";            
+            ret += "Name: " + item.Name + " ID: " + item.ID + " IP: " + item.IP + "\n";
         }
-        return ret;    
+        return ret;
+    }
+
+    public void Start(Simulation mode)
+    {
     }
 }
