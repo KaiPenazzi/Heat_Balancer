@@ -42,9 +42,10 @@ public class Heater
         Heating = 0;
     }
 
-    public void start(int demand)
+    public int start(int demand)
     {
         Heating = demand;
+        return Heating;
     }
 
     public void stop()

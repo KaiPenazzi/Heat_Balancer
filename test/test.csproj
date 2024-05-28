@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Heater\Heater.csproj" />
     <ProjectReference Include="..\lib\lib.csproj" />
+    <ProjectReference Include="..\heat_balancer\heat_balancer.csproj" />
   </ItemGroup>
 
 </Project>

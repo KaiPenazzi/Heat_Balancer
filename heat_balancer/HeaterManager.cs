@@ -1,17 +1,14 @@
 using heaterobj;
-using dataspace;
-using state;
 
 namespace heatermanager;
 
-public class HeatManager
+public class HeaterManager
 {
-    private DataSpace? Data;
     private List<HeaterObj> heaters = new List<HeaterObj>();
+    private HttpClient client = new HttpClient();
 
-    public HeatManager(DataSpace ds)
+    public HeaterManager()
     {
-        Data = ds;
     }
 
     //add a new Heater to the heaters list
@@ -43,7 +40,41 @@ public class HeatManager
         return ret;
     }
 
-    public void Start(Simulation mode)
+    public async Task<List<int[]>> Run(int id, List<int> demands)
     {
+        var output = new List<int[]>();
+
+        var url = heaters.Find(item => item.ID == id).IP;
+        if (url == null)
+            return output;
+
+
+        foreach (int demand in demands)
+        {
+            var values = new Dictionary<string, string>
+            {
+                { "demand", ""+demand},
+            };
+
+            var content = new FormUrlEncodedContent(values);
+            var response = await client.PostAsync(url + "/start", content);
+            var responesString = await response.Content.ReadAsStringAsync();
+
+            output.Add([demand, int.Parse(responesString)]);
+        }
+
+
+        return output;
+    }
+
+    public List<int> GetHeaterIds()
+    {
+        var ids = new List<int>();
+        foreach (var item in heaters)
+        {
+            ids.Add(item.ID);
+        }
+
+        return ids;
     }
 }
