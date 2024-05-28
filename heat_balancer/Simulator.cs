@@ -25,9 +25,9 @@ public class Simulator
         foreach (var id in ids)
         {
 
-            tasks.Add(Task.Run(() =>
+            tasks.Add(Task.Run(async () =>
             {
-                return HM.Run(id, DS.GetDemand(id));
+                return await HM.Run(id, DS.GetDemand(id));
             }));
         }
 

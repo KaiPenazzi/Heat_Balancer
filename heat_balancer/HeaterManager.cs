@@ -48,19 +48,23 @@ public class HeaterManager
         if (url == null)
             return output;
 
-
         foreach (int demand in demands)
         {
             var values = new Dictionary<string, string>
             {
-                { "demand", ""+demand},
+                { "stfff", ""+demand},
             };
 
             var content = new FormUrlEncodedContent(values);
-            var response = await client.PostAsync(url + "/start", content);
+            var response = await client.PostAsync(url + "/start/?demand=" + demand, content);
+
+            Console.WriteLine(response.ToString());
+
             var responesString = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responesString);
 
             output.Add([demand, int.Parse(responesString)]);
+            Console.WriteLine(demand);
         }
 
 

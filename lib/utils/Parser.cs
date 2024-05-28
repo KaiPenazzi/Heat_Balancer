@@ -7,7 +7,7 @@ public class Parser
     public static List<int> DataToIntList(string data)
     {
         List<int> numbers = new List<int>();
-        string[] strNumbers = data.Split("\n");
+        string[] strNumbers = data.Split(",");
 
         foreach (var strNumber in strNumbers)
         {
