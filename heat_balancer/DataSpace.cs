@@ -14,7 +14,12 @@ public class DataSpace
         if (demand == null)
             demand = new Demand();
 
-        return Parser.DataToIntList(demand.Data);
+        var data = demand.Data;
+
+        if (data == null)
+            data = "";
+
+        return Parser.DataToIntList(data);
     }
 
     public void AddDemand(Demand demand)

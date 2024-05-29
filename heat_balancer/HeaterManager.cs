@@ -40,13 +40,11 @@ public class HeaterManager
         return ret;
     }
 
-    public async Task<List<int[]>> Run(int id, List<int> demands)
+    public async Task<List<int[]>> Run(int id, List<int> demands, int time)
     {
         var output = new List<int[]>();
 
-        var url = heaters.Find(item => item.ID == id).IP;
-        if (url == null)
-            return output;
+        var url = heaters.Find(item => item.ID == id)?.IP;
 
         foreach (int demand in demands)
         {
@@ -57,14 +55,11 @@ public class HeaterManager
 
             var content = new FormUrlEncodedContent(values);
             var response = await client.PostAsync(url + "/start/?demand=" + demand, content);
-
-            Console.WriteLine(response.ToString());
-
             var responesString = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(responesString);
 
             output.Add([demand, int.Parse(responesString)]);
-            Console.WriteLine(demand);
+
+            Thread.Sleep(time);
         }
 
 
