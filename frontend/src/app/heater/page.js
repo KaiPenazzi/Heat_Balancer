@@ -1,12 +1,53 @@
 'use client'
 
 import useSWR from 'swr'
+import Button from './(components)/Button'
+import { useFilePicker } from 'use-file-picker';
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
-export default function Home() {
+function Remove(id) {
+    console.log(id);
+    fetch('http://localhost:5169/heater/remove?ID=' + id, {
+        method:'post'
+    }); 
 
+}
+
+function StartSimulation(time){
+    fetch('http://localhost:5169/sim/start?Time=' + time,{
+        method: 'post'
+    })
+}
+
+
+
+export default function Home() {
+    const { openFilePicker, filesContent } = useFilePicker({
+        accept: '.dm',
+        onFilesSuccessfullySelected: ({ filesContent}) => {
+            // this callback is called when there were no validation errors
+            console.log(JSON.stringify({
+                id:'0',
+                data: filesContent[0].content
+            }));
+            
+            fetch('http://localhost:5169/data/add',{
+                method:'post',
+                headers: {
+                    "Content-Type": "application/json",
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                body: JSON.stringify({
+                    ID:'0',
+                    Data: filesContent[0].content
+                })
+            })
+          },
+    });
+    
     const { data: heaters = [], error } = useSWR('http://localhost:5169/status', fetcher, { refreshInterval: 1000 })
+
 
     //console.log(JSON.stringify(heaters));
 
@@ -16,18 +57,23 @@ export default function Home() {
 
     return (
         <main className="flex flex-col items-center p-24">
+            <Button onClick={() => StartSimulation(1)}>Start Simulation</Button>
             <table className="table-auto">
                 <thead>
                     <tr>
                         <th className="">Name</th>
                         <th>Demand</th>
+                        <th>Remove</th>
+                        <th>Demand</th>
                     </tr>
                 </thead>
                 <tbody>
                     {heaters.map((heater) => {
-                        return (<tr>
+                        return (<tr key={heater.id}>
                             <td> {heater.name} </td>
                             <td> {heater.demand} </td>
+                            <td><Button onClick={() => Remove(heater.id)}>Remove</Button></td>
+                            <td><Button onClick={() => {openFilePicker();}}>AddDemand</Button></td>
                         </tr>)
                     })}
                 </tbody>
