@@ -11,8 +11,16 @@ public class Parser
 
         foreach (var strNumber in strNumbers)
         {
-            var doubleN = double.Parse(strNumber);
-            numbers.Add((int)doubleN);
+            var doubleN = 0.0;
+            try
+            {
+                doubleN = double.Parse(strNumber);
+                numbers.Add(Convert.ToInt32(doubleN));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("error while parsing: '" + strNumber + "'\n" + e.ToString());
+            }
         }
 
         return numbers;
