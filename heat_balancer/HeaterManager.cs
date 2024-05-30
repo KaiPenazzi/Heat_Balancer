@@ -30,14 +30,21 @@ public class HeaterManager
         }
     }
 
-    public String getStatus()
+    public List<HeaterObj> getStatus()
     {
-        String ret = "";
-        foreach (var item in heaters)
+        GetDemands();
+        return heaters;
+    }
+
+    private async void GetDemands()
+    {
+        foreach (var heater in heaters)
         {
-            ret += "Name: " + item.Name + " ID: " + item.ID + " IP: " + item.IP + "\n";
+            var response = await client.GetAsync(heater.IP + "/state");
+            var respnseString = await response.Content.ReadAsStringAsync();
+
+            heater.demand = int.Parse(respnseString);
         }
-        return ret;
     }
 
     public async Task<List<int[]>> Run(int id, List<int> demands, int time)
@@ -62,6 +69,8 @@ public class HeaterManager
             Thread.Sleep(time);
         }
 
+        var cont = new FormUrlEncodedContent(new Dictionary<string, string>());
+        var res = await client.PostAsync(url + "/stop", cont);
 
         return output;
     }
