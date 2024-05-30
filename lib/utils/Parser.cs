@@ -11,11 +11,10 @@ public class Parser
 
         foreach (var strNumber in strNumbers)
         {
-            var doubleN = 0.0;
             try
             {
-                doubleN = double.Parse(strNumber);
-                numbers.Add(Convert.ToInt32(doubleN));
+                string[] toint = strNumber.Split(".");
+                numbers.Add(Convert.ToInt32(toint[0]));
             }
             catch (Exception e)
             {
