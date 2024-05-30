@@ -4,8 +4,21 @@ using dataspace;
 using demand;
 using simulator;
 
+var MyAllowSpecs = "allowspecs";
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowSpecs,
+                    policy =>
+                    {
+                        policy.WithOrigins("*");
+                    });
+        });
+
 var app = builder.Build();
+
+app.UseCors(MyAllowSpecs);
 
 var Data = new DataSpace();
 var heater_manager = new HeaterManager();
