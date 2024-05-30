@@ -20,33 +20,38 @@ function StartSimulation(time){
     })
 }
 
+function Add(heater){
+    fetch('http://localhost:5169/heater/add?Heater=')
+}
+
 
 
 export default function Home() {
-    const { openFilePicker, filesContent } = useFilePicker({
-        accept: '.dm',
-        onFilesSuccessfullySelected: ({ filesContent}) => {
-            // this callback is called when there were no validation errors
-            console.log(JSON.stringify({
-                id:'0',
-                data: filesContent[0].content
-            }));
-            
-            fetch('http://localhost:5169/data/add',{
-                method:'post',
-                headers: {
-                    "Content-Type": "application/json",
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                  },
-                body: JSON.stringify({
-                    ID:'0',
-                    Data: filesContent[0].content
+
+    function filePicker(id){
+        const { openFilePicker, filesContent } = useFilePicker({
+            accept: '.dm',
+            onFilesSuccessfullySelected: ({ filesContent}) => {
+                // this callback is called when there were no validation errors
+                fetch('http://localhost:5169/data/add',{
+                    method:'post',
+                    headers: {
+                        "Content-Type": "application/json",
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                      },
+                    body: JSON.stringify({
+                        ID: id,
+                        Data: filesContent[0].content
+                    })
                 })
-            })
-          },
-    });
+              },
+        });
+        return (<Button onClick={() => {openFilePicker();}}>AddDemand</Button>);
+    }
+
     
-    const { data: heaters = [], error } = useSWR('http://localhost:5169/status', fetcher, { refreshInterval: 1000 })
+    
+    const { data: heaters = [], error } = useSWR('http://localhost:5169/status', fetcher, { refreshInterval: 400 })
 
 
     //console.log(JSON.stringify(heaters));
@@ -57,7 +62,7 @@ export default function Home() {
 
     return (
         <main className="flex flex-col items-center p-24">
-            <Button onClick={() => StartSimulation(1)}>Start Simulation</Button>
+            <Button onClick={() => StartSimulation(200)}>Start Simulation</Button>
             <table className="table-auto">
                 <thead>
                     <tr>
@@ -73,7 +78,7 @@ export default function Home() {
                             <td> {heater.name} </td>
                             <td> {heater.demand} </td>
                             <td><Button onClick={() => Remove(heater.id)}>Remove</Button></td>
-                            <td><Button onClick={() => {openFilePicker();}}>AddDemand</Button></td>
+                            <td>{() => filePicker(heater.id)}</td>
                         </tr>)
                     })}
                 </tbody>
