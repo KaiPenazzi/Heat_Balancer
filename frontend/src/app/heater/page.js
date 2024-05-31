@@ -2,63 +2,33 @@
 
 import useSWR from 'swr'
 import Button from './(components)/Button'
-import { useFilePicker } from 'use-file-picker';
+import AddDemand from './(components)/AddDemand'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 function Remove(id) {
     console.log(id);
     fetch('http://localhost:5169/heater/remove?ID=' + id, {
-        method:'post'
-    }); 
+        method: 'post'
+    });
 
 }
 
-function StartSimulation(time){
-    fetch('http://localhost:5169/sim/start?Time=' + time,{
+function StartSimulation(time) {
+    fetch('http://localhost:5169/sim/start?Time=' + time, {
         method: 'post'
     })
 }
 
-function Add(heater){
+function Add(heater) {
     fetch('http://localhost:5169/heater/add?Heater=')
 }
 
 
-
 export default function Home() {
 
-    function filePicker(id){
-        const { openFilePicker, filesContent } = useFilePicker({
-            accept: '.dm',
-            onFilesSuccessfullySelected: ({ filesContent}) => {
-                // this callback is called when there were no validation errors
-                fetch('http://localhost:5169/data/add',{
-                    method:'post',
-                    headers: {
-                        "Content-Type": "application/json",
-                        // 'Content-Type': 'application/x-www-form-urlencoded',
-                      },
-                    body: JSON.stringify({
-                        ID: id,
-                        Data: filesContent[0].content
-                    })
-                })
-              },
-        });
-        return (<Button onClick={() => {openFilePicker();}}>AddDemand</Button>);
-    }
-
-    
-    
     const { data: heaters = [], error } = useSWR('http://localhost:5169/status', fetcher, { refreshInterval: 400 })
-
-
-    //console.log(JSON.stringify(heaters));
-
     if (error) console.log(error)
-
-    //return (<main></main>);
 
     return (
         <main className="flex flex-col items-center p-24">
@@ -78,7 +48,7 @@ export default function Home() {
                             <td> {heater.name} </td>
                             <td> {heater.demand} </td>
                             <td><Button onClick={() => Remove(heater.id)}>Remove</Button></td>
-                            <td>{() => filePicker(heater.id)}</td>
+                            <td><AddDemand id={heater.id}></AddDemand></td>
                         </tr>)
                     })}
                 </tbody>
