@@ -2,20 +2,20 @@
 
 import useSWR from 'swr'
 import Button from './(components)/Button'
-import { useFilePicker } from 'use-file-picker';
+import AddDemand from './(components)/AddDemand'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 function Remove(id) {
     console.log(id);
     fetch('http://localhost:5169/heater/remove?ID=' + id, {
-        method:'post'
-    }); 
+        method: 'post'
+    });
 
 }
 
-function StartSimulation(time){
-    fetch('http://localhost:5169/sim/start?Time=' + time,{
+function StartSimulation(time) {
+    fetch('http://localhost:5169/sim/start?Time=' + time, {
         method: 'post'
     })
 }
@@ -23,29 +23,6 @@ function StartSimulation(time){
 
 
 export default function Home() {
-    const { openFilePicker, filesContent } = useFilePicker({
-        accept: '.dm',
-        onFilesSuccessfullySelected: ({ filesContent}) => {
-            // this callback is called when there were no validation errors
-            console.log(JSON.stringify({
-                id:'0',
-                data: filesContent[0].content
-            }));
-            
-            fetch('http://localhost:5169/data/add',{
-                method:'post',
-                headers: {
-                    "Content-Type": "application/json",
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                  },
-                body: JSON.stringify({
-                    ID:'0',
-                    Data: filesContent[0].content
-                })
-            })
-          },
-    });
-    
     const { data: heaters = [], error } = useSWR('http://localhost:5169/status', fetcher, { refreshInterval: 1000 })
 
 
@@ -73,7 +50,7 @@ export default function Home() {
                             <td> {heater.name} </td>
                             <td> {heater.demand} </td>
                             <td><Button onClick={() => Remove(heater.id)}>Remove</Button></td>
-                            <td><Button onClick={() => {openFilePicker();}}>AddDemand</Button></td>
+                            <td><AddDemand id={heater.id}></AddDemand></td>
                         </tr>)
                     })}
                 </tbody>
