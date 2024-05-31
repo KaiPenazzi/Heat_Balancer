@@ -20,8 +20,30 @@ function StartSimulation(time) {
     })
 }
 
-function Add(heater) {
-    fetch('http://localhost:5169/heater/add?Heater=')
+function Add(name, ip) {
+    console.log(fetch('http://localhost:5169/heater/add', {
+        method: 'post',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            Name: name,
+            IP: ip,
+        })
+        
+    }))
+    
+    fetch('http://localhost:5169/heater/add', {
+                method: 'post',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    Name: name,
+                    IP: ip,
+                })
+                
+            })
 }
 
 
@@ -32,6 +54,12 @@ export default function Home() {
     return (
         <main className="flex flex-col items-center p-24">
             <Button onClick={() => StartSimulation(200)}>Start Simulation</Button>
+            <label>Name:</label>
+            <input id='name'></input>
+            <label>IP:</label>
+            <input id='ip'></input>
+
+            <Button onClick={()=> Add(document.getElementById('name').value, document.getElementById('ip').value)}>Add Heater</Button>
             <table className="table-auto">
                 <thead>
                     <tr>
