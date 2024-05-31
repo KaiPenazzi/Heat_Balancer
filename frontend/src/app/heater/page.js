@@ -20,21 +20,18 @@ function StartSimulation(time) {
     })
 }
 
+function Add(heater) {
+    fetch('http://localhost:5169/heater/add?Heater=')
+}
 
 
 export default function Home() {
-    const { data: heaters = [], error } = useSWR('http://localhost:5169/status', fetcher, { refreshInterval: 1000 })
-
-
-    //console.log(JSON.stringify(heaters));
-
+    const { data: heaters = [], error } = useSWR('http://localhost:5169/status', fetcher, { refreshInterval: 400 })
     if (error) console.log(error)
-
-    //return (<main></main>);
 
     return (
         <main className="flex flex-col items-center p-24">
-            <Button onClick={() => StartSimulation(1)}>Start Simulation</Button>
+            <Button onClick={() => StartSimulation(200)}>Start Simulation</Button>
             <table className="table-auto">
                 <thead>
                     <tr>
