@@ -3,6 +3,7 @@
 import useSWR from 'swr'
 import Button from './(components)/Button'
 import AddDemand from './(components)/AddDemand'
+import AddHeater from './(components)/AddHeater'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
@@ -20,31 +21,6 @@ function StartSimulation(time) {
     })
 }
 
-function Add(name, ip) {
-    console.log(fetch('http://localhost:5169/heater/add', {
-        method: 'post',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            Name: name,
-            IP: ip,
-        })
-        
-    }))
-    
-    fetch('http://localhost:5169/heater/add', {
-                method: 'post',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    Name: name,
-                    IP: ip,
-                })
-                
-            })
-}
 
 
 export default function Home() {
@@ -54,12 +30,7 @@ export default function Home() {
     return (
         <main className="flex flex-col items-center p-24">
             <Button onClick={() => StartSimulation(200)}>Start Simulation</Button>
-            <label>Name:</label>
-            <input id='name'></input>
-            <label>IP:</label>
-            <input id='ip'></input>
-
-            <Button onClick={()=> Add(document.getElementById('name').value, document.getElementById('ip').value)}>Add Heater</Button>
+            <AddHeater></AddHeater>
             <table className="table-auto">
                 <thead>
                     <tr>
