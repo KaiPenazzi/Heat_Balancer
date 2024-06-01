@@ -1,4 +1,5 @@
 using heaterobj;
+using exceptions;
 
 namespace heatermanager;
 
@@ -14,6 +15,18 @@ public class HeaterManager
     //add a new Heater to the heaters list
     public int add(HeaterObj heater)
     {
+        try
+        {
+            var resTask = client.GetAsync(heater.IP + "/ok");
+            resTask.Wait();
+            var res = resTask.Result;
+        }
+        catch (Exception e)
+        {
+            Console.Write("ip is wrong\n" + e);
+            throw new IpException("cant connect to ip");
+        }
+
         heaters.Add(heater);
         return heater.ID;
     }
