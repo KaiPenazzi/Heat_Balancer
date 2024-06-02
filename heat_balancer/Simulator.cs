@@ -3,27 +3,30 @@ namespace simulator;
 using dataspace;
 using heatermanager;
 using result;
+using resultmanager;
 
 public class Simulator
 {
     private DataSpace? DS { get; set; }
     private HeaterManager? HM { get; set; }
+    private ResultManager? RM { get; set; }
 
-    public Simulator(DataSpace ds, HeaterManager hm)
+    public Simulator(DataSpace ds, HeaterManager hm, ResultManager rm)
     {
         DS = ds;
         HM = hm;
+        RM = rm;
     }
 
 
-    public async Task<List<Result>> Start(int time)
+    public async Task Start(int time)
     {
         var result = new List<Result>();
         var tasks = new List<Task<Result>>();
         var ids = HM?.GetHeaterIds();
 
         if (ids == null)
-            return result;
+            return;
 
         foreach (var id in ids)
         {
@@ -42,6 +45,7 @@ public class Simulator
             result.Add(await task);
         }
 
-        return result;
+        if (RM != null)
+            RM.Data = result;
     }
 }

@@ -4,6 +4,7 @@ import useSWR from 'swr'
 import Button from './(components)/Button'
 import AddDemand from './(components)/AddDemand'
 import AddHeater from './(components)/AddHeater'
+import Result from './(components)/Result'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
@@ -51,6 +52,7 @@ export default function Home() {
                     })}
                 </tbody>
             </table>
+            <Result></Result>
         </main>
     );
 }
