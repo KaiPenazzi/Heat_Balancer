@@ -1,5 +1,6 @@
 using heaterobj;
 using exceptions;
+using result;
 
 namespace heatermanager;
 
@@ -60,24 +61,20 @@ public class HeaterManager
         }
     }
 
-    public async Task<List<int[]>> Run(int id, List<int> demands, int time)
+    public async Task<Result> Run(int id, List<int> demands, int time)
     {
-        var output = new List<int[]>();
+        var output = new Result(id);
 
         var url = heaters.Find(item => item.ID == id)?.IP;
 
         foreach (int demand in demands)
         {
-            var values = new Dictionary<string, string>
-            {
-                { "stfff", ""+demand},
-            };
-
+            var values = new Dictionary<string, string>();
             var content = new FormUrlEncodedContent(values);
             var response = await client.PostAsync(url + "/start/?demand=" + demand, content);
             var responesString = await response.Content.ReadAsStringAsync();
 
-            output.Add([demand, int.Parse(responesString)]);
+            output.Data.Add([demand, int.Parse(responesString)]);
 
             Thread.Sleep(time);
         }
@@ -99,3 +96,4 @@ public class HeaterManager
         return ids;
     }
 }
+

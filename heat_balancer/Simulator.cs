@@ -2,6 +2,7 @@ namespace simulator;
 
 using dataspace;
 using heatermanager;
+using result;
 
 public class Simulator
 {
@@ -15,10 +16,10 @@ public class Simulator
     }
 
 
-    public async Task<List<List<int[]>>> Start(int time)
+    public async Task<List<Result>> Start(int time)
     {
-        var result = new List<List<int[]>>();
-        var tasks = new List<Task<List<int[]>>>();
+        var result = new List<Result>();
+        var tasks = new List<Task<Result>>();
         var ids = HM?.GetHeaterIds();
 
         if (ids == null)
@@ -29,7 +30,7 @@ public class Simulator
 
             tasks.Add(Task.Run(async () =>
             {
-                List<int[]> res = new List<int[]>();
+                Result res = new Result(id);
                 if (HM != null && DS != null)
                     res = await HM.Run(id, DS.GetDemand(id), time);
                 return res;
