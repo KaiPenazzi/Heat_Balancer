@@ -1,0 +1,11 @@
+[Unit]
+Description=Start Heater
+
+[Service]
+Type=simple
+Restart=always
+Environment="HOME=/home/kai"
+ExecStart=/usr/bin/dotnet run --project /home/kai/code/Heat_Balancer/Heater/Heater.csproj
+
+[Install]
+WantedBy=multi-user.target
