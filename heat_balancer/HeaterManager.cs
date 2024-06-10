@@ -63,24 +63,29 @@ public class HeaterManager
 
     public async Task<Result> Run(int id, List<int> demands, int time)
     {
-        var output = new Result(id);
+        var output = new Result(id, "not found");
 
-        var url = heaters.Find(item => item.ID == id)?.IP;
+        var heater = heaters.Find(item => item.ID == id);
 
-        foreach (int demand in demands)
+        if (heater != null)
         {
-            var values = new Dictionary<string, string>();
-            var content = new FormUrlEncodedContent(values);
-            var response = await client.PostAsync(url + "/start/?demand=" + demand, content);
-            var responesString = await response.Content.ReadAsStringAsync();
+            output = new Result(id, heater?.Name);
 
-            output.Data.Add([demand, int.Parse(responesString)]);
+            foreach (int demand in demands)
+            {
+                var values = new Dictionary<string, string>();
+                var content = new FormUrlEncodedContent(values);
+                var response = await client.PostAsync(heater.IP + "/start/?demand=" + demand, content);
+                var responesString = await response.Content.ReadAsStringAsync();
 
-            Thread.Sleep(time);
+                output.Data.Add([demand, int.Parse(responesString)]);
+
+                Thread.Sleep(time);
+            }
+
+            var cont = new FormUrlEncodedContent(new Dictionary<string, string>());
+            var res = await client.PostAsync(heater.IP + "/stop", cont);
         }
-
-        var cont = new FormUrlEncodedContent(new Dictionary<string, string>());
-        var res = await client.PostAsync(url + "/stop", cont);
 
         return output;
     }

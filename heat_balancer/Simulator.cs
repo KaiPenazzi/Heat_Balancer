@@ -33,7 +33,7 @@ public class Simulator
 
             tasks.Add(Task.Run(async () =>
             {
-                Result res = new Result(id);
+                Result res = new Result(id, "");
                 if (HM != null && DS != null)
                     res = await HM.Run(id, DS.GetDemand(id), time);
                 return res;

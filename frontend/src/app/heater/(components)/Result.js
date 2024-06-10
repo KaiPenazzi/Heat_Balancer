@@ -35,11 +35,12 @@ const transform = (data) => {
             heater: [],
             demand: [],
             labels: [],
+            name: data[i].name
         })
         for (let j = 0; j < data[i].data.length; j++) {
             ret[i].heater.push(data[i].data[j][0])
             ret[i].demand.push(data[i].data[j][1])
-            ret[i].labels.push(j)
+            ret[i].labels.push("")
         }
     }
 
@@ -50,7 +51,6 @@ export default function Result() {
     const { data, error } = useSWR('http://localhost:5169/sim/results', fetcher, { refreshInterval: 400 })
     if (error) console.log(error);
 
-    const [options, setOptions] = useState(0);
     const [data2, setData2] = useState([]);
 
     useEffect(() => {
@@ -58,39 +58,41 @@ export default function Result() {
             let chartData = [];
             chartData = transform(data)
 
-            setOptions({
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'test frame',
-                    },
-                },
-            })
 
 
             setData2(() => {
                 let data = []
                 for (let i = 0; i < chartData.length; i++) {
                     data.push({
-                        labels: chartData[i].labels,
-                        datasets: [
-                            {
-                                label: 'Demand',
-                                data: chartData[0].heater,
-                                borderColor: 'rgb(255, 99, 132)',
-                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: chartData[i].name,
+                                },
                             },
-                            {
-                                label: 'Produced',
-                                data: chartData[0].demand,
-                                borderColor: 'rgb(53, 162, 235)',
-                                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                            },
-                        ],
+                        },
+                        data: {
+                            labels: chartData[i].labels,
+                            datasets: [
+                                {
+                                    label: 'Demand',
+                                    data: chartData[0].heater,
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                },
+                                {
+                                    label: 'Produced',
+                                    data: chartData[0].demand,
+                                    borderColor: 'rgb(53, 162, 235)',
+                                    backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                                },
+                            ],
+                        }
                     })
                 }
 
@@ -109,7 +111,7 @@ export default function Result() {
         <main>
             {data2.map((data) => {
                 return (
-                    <Line options={options} data={data} />
+                    <Line options={data.options} data={data.data} />
                 )
             })}
         </main >
