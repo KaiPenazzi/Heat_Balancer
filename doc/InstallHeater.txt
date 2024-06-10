@@ -1,0 +1,96 @@
+
+configure security group
+    portal.bw-cloud.org
+    Network ->
+        Security Groups ->
+            Name: Default
+                Action (Manage Rules) ->
+                    Add Rule ->
+                        Description: heater
+                        Port: 5037
+                            Add ->
+                
+
+ssh into instance
+    ssh -i <private_key> debian@<ip>
+
+    sudo passwd root
+
+install dotnet runtime:
+    sudo apt-get update
+    sudo apt-get install -y wget apt-transport-https
+
+    wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+
+    sudo apt-get update
+    sudo apt-get install -y dotnet-sdk-8.0
+
+    dotnet --version
+
+clone git Repository 
+    git clone https://github.com/KaiPenazzi/Heat_Balancer.git
+
+    config real ip
+    change in /Heat_Balancer/Heater/Properties/launchSettings.json the applicationUrl form "localhost" to real ip
+    only in the http part necessary
+
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://192.52.34.236:5037", //normaly http://localhost:5037
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+
+make system service file ready
+    in Heat_Balancer/Heater/heater.service
+    change all strings "kai" to "debian"
+
+    [Unit]
+    Description=Start Heater
+
+    [Service]
+    Type=simple
+    Restart=always
+    Environment="HOME=/home/debian"
+    ExecStart=/usr/bin/dotnet run --project /home/debian/Heat_Balancer/Heater/Heater.csproj
+
+    [Install]
+    WantedBy=multi-user.target
+
+    Copy heater.service in systemd directory
+        cp heater.service /etc/systemd/system/.
+
+start Service:
+    swtich to root user
+    su root
+
+    systemctl start heater.service
+
+    systemctl status heater.service
+
+    should be something like this:
+        ● heater.service - Start Heater
+        Loaded: loaded (/etc/systemd/system/heater.service; disabled; preset: enabled)
+        Active: active (running) since Mon 2024-06-10 14:24:48 UTC; 27min ago
+        Main PID: 1170 (dotnet)
+        Tasks: 34 (limit: 1145)
+        Memory: 150.5M
+        CPU: 5.080s
+        CGroup: /system.slice/heater.service
+             ├─1170 /usr/bin/dotnet run --project /home/debian/Heat_Balancer/Heater/Heater.csproj
+             └─1198 /home/debian/Heat_Balancer/Heater/bin/Debug/net8.0/Heater
+
+        Jun 10 14:24:48 heatinst systemd[1]: Started heater.service - Start Heater.
+        Jun 10 14:24:48 heatinst dotnet[1170]: Building...
+        Jun 10 14:24:51 heatinst dotnet[1198]: info: Microsoft.Hosting.Lifetime[14]
+        Jun 10 14:24:51 heatinst dotnet[1198]:       Now listening on: http://192.52.34.236:5037
+        Jun 10 14:24:51 heatinst dotnet[1198]: info: Microsoft.Hosting.Lifetime[0]
+        Jun 10 14:24:51 heatinst dotnet[1198]:       Application started. Press Ctrl+C to shut down.
+        Jun 10 14:24:51 heatinst dotnet[1198]: info: Microsoft.Hosting.Lifetime[0]
+        Jun 10 14:24:51 heatinst dotnet[1198]:       Hosting environment: Development
+        Jun 10 14:24:51 heatinst dotnet[1198]: info: Microsoft.Hosting.Lifetime[0]
+        Jun 10 14:24:51 heatinst dotnet[1198]:       Content root path: /home/debian/Heat_Balancer/Heater
